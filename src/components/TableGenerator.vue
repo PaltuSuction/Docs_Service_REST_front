@@ -1,6 +1,5 @@
 <template>
     <div class="table-generator">
-        <p>GENERATOR PLACEHOLDER</p>
         <b-card>
             <b-card-body>
                 <b-form-group>
@@ -9,78 +8,14 @@
                     </b-form-select>
                     <b-button squared variant="outline-dark" @click="add_column" class="ml-3">Добавить столбец</b-button>
                     <b-button squared variant="outline-dark" @click="delete_column" class="ml-3">Удалить столбец</b-button>
-                    <b-button squared variant="outline-dark" @click="" class="ml-3">Сохранить таблицу</b-button>
+                    <b-button squared variant="outline-dark" @click="save_table" class="ml-3">Сохранить таблицу</b-button>
                 </b-form-group>
             </b-card-body>
         </b-card>
         <b-card>
             <b-card-body>
                 <div class="table-wrapper">
-                    <!--
-                    <table border="1">
-                        <thead>
-                        <tr>
-                            <th rowspan="2">
-                                ФИО
-                            </th>
-                            <th v-for="grade_type in table.grade_types" :colspan="grade_type.num" :key="grade_type.name">
-                                {{grade_type.name}}
-                            </th>
-                        </tr>
-                        <tr>
-                            <template v-for="grade_type in table.grade_types">
-                                <td v-for="n in grade_type.num">
-                                    # {{n}}
-                                </td>
-                            </template>
-                        </tr>
-                        </thead>
-                        <tbody>
-                            <tr v-for="student in table.group_info" rowspan="2">
-                                <td>
-                                     {{student.fio}}
-                                </td>
-                                <template v-for="grade_type in student.grades">
-                                    <td v-for="grade in grade_type">
-                                        <div v-show="student.edit !== grade">
-                                            <label @dblclick="student.edit = grade">{{grade}}</label>
-                                        </div>
-                                        <input name="grade"
-                                               v-show = "student.edit === grade"
-                                               v-model="placeholder_change"
-                                               v-on:blur="student.edit = ''"
-                                               @keyup.enter="student.edit = ''"/>
-                                    </td>
-                                </template>
-                            </tr>
-                        </tbody>
-                    </table>
-                    -->
-                    <!--
-                    <table border="1">
-                        <thead>
-                        <tr>
-                            <td v-for="(value, key) in table_2[0]">
-                                {{key}}
-                            </td>
-                        </tr>
-                        </thead>
-                        <tbody>
-                            <tr v-for="student_data in table_2">
-                                <td v-for="(value, key) in student_data">
-                                    <div v-show="student_data.edit !== key">
-                                        <label @dblclick="student_data.edit = key"> {{value}}</label>
-                                    </div>
-                                    <input class="grade-input" name="key"
-                                    v-show="student_data.edit === key"
-                                    v-model = "student_data[key]"
-                                    v-on:blur="student_data.edit = ''"
-                                    @keyup.enter = "student_data.edit = ''"/>
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
-                    -->
+
                     <table border="2" style="margin: auto" ref="grades_table">
                         <thead>
                             <tr>
@@ -107,7 +42,14 @@
                                </td>
                                 <template v-for="grade_type in student.grades">
                                     <td v-for="grade in grade_type">
-                                        {{grade.grade_value}}
+                                        <div v-show="current_grade !== grade.id">
+                                            <span @click="current_grade = grade.id" class="grade-span">{{grade.grade_value}}</span>
+                                        </div>
+                                        <b-input class="grade-input"
+                                                 v-show="current_grade === grade.id"
+                                                 v-model="grade.grade_value"
+                                                 @blur="current_grade = ''"
+                                                 @keyup.enter="current_grade = ''"/>
                                     </td>
                                 </template>
                             </tr>
@@ -136,37 +78,8 @@
                 students: '',
                 grades_types: '',
                 selected_column_type: '',
-                // Тестовые переменные
-                /* table: {
-                    grade_types: [{'name': 'Лабораторная работа','num': 4},
-                                  {'name': 'Тест','num': 3},
-                                  {'name': 'Итог','num': 1}],
-                    group_info: {
-                        'student_1' : {
-                            fio: 'Ф И О 1',
-                            grades: {
-                                'lab': [4, 5, 5, 5],
-                                'test': [3, 4, 4],
-                                'fin': [0]
-                            },
-                            edit: undefined
-                        },
-                        'student_2' : {
-                            fio: 'Ф И О 2',
-                            grades: {
-                                'lab': [4, 3, 4, 5],
-                                'test': [4, 4, 5],
-                                'fin': [0]
-                            },
-                            edit: undefined
-                        }
-                    }
-                },
-                table_2: [
-                    {'fio': 'ФИО1', 'lab1': '3', 'lab2': '4', 'lab3': '3', 'test1': '5', 'test2': '5', 'edit': undefined},
-                    {'fio': 'ФИО2', 'lab1': '3', 'lab2': '3', 'lab3': '5', 'test1': '3', 'test2': '5', 'edit': undefined},
-                    {'fio': 'ФИО3', 'lab1': '5', 'lab2': '4', 'lab3': '3', 'test1': '5', 'test2': '4', 'edit': undefined},
-                ] */
+
+                current_grade: '',
             }
         },
         methods: {
@@ -176,10 +89,8 @@
                     if (key === this.selected_column_type) {
                         _t.grades_types[key] +=1
                     }
-                    // console.log(key, value)
                 }
                 if (_t.grades_types[_t.selected_column_type] === undefined) {
-                    // _t.grades_types[_t.selected_column_type] = 1
                     _t.$set(_t.grades_types, _t.selected_column_type, 1)
                 }
                 let data = {action: 'add_column', params: {table_id: _t.table_id, column_type: _t.selected_column_type}}
@@ -237,6 +148,27 @@
                     })
                 }
             },
+            save_table: function() {
+                let all_grades = {}
+                for (let student of this.students) {
+                    for (let type in student.grades) {
+                        for (let grade of student.grades[type])
+                        all_grades[grade.id] = grade.grade_value
+                    }
+                }
+              let data = {action: 'save_table', params: {table_id: this.table_id, all_grades: all_grades}}
+              axios({url: `http://localhost:6060/api/table_creator/`, data: data, method: 'POST'})
+                .then(resp => {
+                    if (resp.data.result === 'ok') {
+                        this.make_toast('Сохранение', 'Таблица сохранена')
+                    }
+                    else {
+                        this.make_toast('Сохранение', 'Ошибка при сохранении')
+                        console.log(resp.data.params.message)
+                    }
+                })
+
+            },
             //additional functions
             compare_grades: function (a, b) {
                 if (a.grade_type < b.grade_type)
@@ -244,6 +176,13 @@
                 if (a.grade_type > b.grade_type)
                     return 1
                 return 0
+            },
+            make_toast: function (event_type, message, append=false) {
+                this.$bvToast.toast(message, {
+                    title: event_type,
+                    autoHideDelay: 5000,
+                    appendToast: append
+                })
             }
         },
         created() {
@@ -286,5 +225,17 @@
       height: 100px;
       width: 100%;
       z-index: -1;
+    }
+
+    .grade-span {
+        display: block;
+        box-sizing: border-box;
+        width: 100%;
+        height: 22px;
+    }
+    .grade-input {
+        text-align: center;
+        width: 50px;
+        max-height: 25px;
     }
 </style>

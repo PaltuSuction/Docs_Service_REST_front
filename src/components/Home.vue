@@ -31,9 +31,6 @@
                                         <div class="nav-item">Список созданных таблиц</div>
                                     </b-nav-item>
                                      <b-nav-item router-link to="" class="border-bottom">
-                                         <div class="nav-item">Список доступных дисциплин</div>
-                                     </b-nav-item>
-                                     <b-nav-item router-link to="" class="border-bottom">
                                          <div class="nav-item">Редактирование профиля</div>
                                      </b-nav-item>
                                      <b-nav-item router-link to="/all_groups" class="border-bottom">

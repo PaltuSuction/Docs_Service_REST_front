@@ -64,12 +64,20 @@
                 .then(resp => {
                     if (resp.data.result === 'ok') {
                         this.fetch_tables_info()
+                        this.make_toast('Удаление', 'Таблица удалена')
                     }
                     else {
                         console.log(resp.data.params.message)
                     }
                 })
-            }
+            },
+            make_toast: function (event_type, message, append=false) {
+                this.$bvToast.toast(message, {
+                    title: event_type,
+                    autoHideDelay: 3000,
+                    appendToast: append
+                })
+            },
         },
         created() {
             this.fetch_tables_info()
