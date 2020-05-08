@@ -1,21 +1,24 @@
 <template>
     <div class="table-generator">
         <b-card>
-            <b-card-body>
-                <b-form-group>
-                    <b-form-select v-model="selected_column_type" style="width: 14vw">
-                         <b-form-select-option v-for="type in store.state.col_types" v-bind:value="type">{{type}}</b-form-select-option>
+            <b-card-body style="text-align: center">
+                <div class="mb-3">
+                    <b-form-select style="width: 14vw; display: inline" v-model="choosed_column_type">
+                        <b-form-select-option v-for="type in store.state.col_types" v-bind:value="type">{{type}}</b-form-select-option>
                     </b-form-select>
-                    <b-button squared variant="outline-dark" @click="add_column" class="ml-3">Добавить столбец</b-button>
-                    <b-button squared variant="outline-dark" @click="delete_column" class="ml-3">Удалить столбец</b-button>
-                    <b-button squared variant="outline-dark" @click="save_table" class="ml-3">Сохранить таблицу</b-button>
+                    <b-form-input class="ml-5" style="width: 14vw; display: inline" v-model="custom_column_type" v-show="choosed_column_type === 'Свой вариант'" type='text' placeholder='Свой вариант'/>
+                </div>
+                <b-form-group>
+                    <b-button squared variant="outline-dark" @click="add_column" class="mr-3">Добавить столбец</b-button>
+                    <b-button squared variant="outline-dark" @click="delete_column" class="mr-3">Удалить столбец</b-button>
+                    <b-button squared variant="outline-dark" @click="save_table" class="mr-3">Сохранить таблицу</b-button>
+                    <b-button squared variant="outline-dark" @click="" class="mr-3">Создать документ</b-button>
                 </b-form-group>
             </b-card-body>
         </b-card>
         <b-card>
             <b-card-body>
                 <div class="table-wrapper">
-
                     <table border="2" style="margin: auto" ref="grades_table">
                         <thead>
                             <tr>
@@ -43,12 +46,12 @@
                                 <template v-for="grade_type in student.grades">
                                     <td v-for="grade in grade_type">
                                         <div v-show="current_grade !== grade.id">
-                                            <span @click="current_grade = grade.id" class="grade-span">{{grade.grade_value}}</span>
+                                            <span @mouseenter="current_grade = grade.id" class="grade-span">{{grade.grade_value}}</span>
                                         </div>
                                         <b-input class="grade-input"
                                                  v-show="current_grade === grade.id"
                                                  v-model="grade.grade_value"
-                                                 @blur="current_grade = ''"
+                                                 @mouseleave="current_grade = ''"
                                                  @keyup.enter="current_grade = ''"/>
                                     </td>
                                 </template>
@@ -78,13 +81,22 @@
                 students: '',
                 grades_types: '',
                 selected_column_type: '',
-
+                choosed_column_type: '',
+                custom_column_type: '',
                 current_grade: '',
             }
         },
         methods: {
             add_column: function () {
                 let _t = this
+
+                if (_t.choosed_column_type === 'Свой вариант') {
+                    if (_t.custom_column_type !== '') {
+                        _t.selected_column_type = _t.custom_column_type
+                    }
+                }
+                else {_t.selected_column_type = _t.choosed_column_type}
+
                 for (let [key, value] of Object.entries(_t.grades_types)) {
                     if (key === this.selected_column_type) {
                         _t.grades_types[key] +=1
@@ -110,23 +122,18 @@
                         console.log(resp.data.params.message)
                     }
                 })
-
-                /*for (let student of this.students) {
-                    student.grades[this.selected_column_type].push({grade_type: this.selected_column_type, grade_value: null})
-                    student.grades[this.selected_column_type].sort(this.compare_grades)
-                } */
             },
             delete_column: function () {
                 var _t = this
-                if (_t.selected_column_type in _t.grades_types) {
-                     for (let [key, value] of Object.entries(_t.grades_types)) {
-                        if (key === _t.selected_column_type) {
-                            _t.grades_types[key] -=1
-                            if (_t.grades_types[key] <= 0) {
-                                delete _t.grades_types[key]
-                            }
-                        }
+
+                if (_t.choosed_column_type === 'Свой вариант') {
+                    if (_t.custom_column_type !== '') {
+                        _t.selected_column_type = _t.custom_column_type
                     }
+                }
+                else {_t.selected_column_type = _t.choosed_column_type}
+
+                if (_t.selected_column_type in _t.grades_types) {
                      let deleted_grades_ids = []
                      for (let student of _t.students) {
                          let last_grade_in_type = student.grades[_t.selected_column_type][student.grades[_t.selected_column_type].length - 1]
@@ -140,6 +147,14 @@
                             for (let student of _t.students) {
                                 student.grades[_t.selected_column_type].pop()
                                 if (student.grades[_t.selected_column_type] <= 0) delete student.grades[_t.selected_column_type]
+                            }
+                            for (let [key, value] of Object.entries(_t.grades_types)) {
+                                if (key === _t.selected_column_type) {
+                                    _t.grades_types[key] -=1
+                                    if (_t.grades_types[key] <= 0) {
+                                        delete _t.grades_types[key]
+                                    }
+                                }
                             }
                         }
                         else {

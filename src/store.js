@@ -11,6 +11,7 @@ export default new Vuex.Store({
     user : {},
     selected_table_id: '',
     col_types: [
+        'Контрольная точка',
         'Тест',
         'Контрольная работа',
         'Лабораторная работа',

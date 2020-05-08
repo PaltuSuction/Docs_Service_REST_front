@@ -15,7 +15,7 @@
                <b-card-footer>
                    <b-btn squared variant="outline-secondary" small class="action-button" @click="edit_table(table.id)">Редактировать</b-btn>
                    <b-btn squared variant="outline-secondary" class="action-button" @click="delete_table(table.id)">Удалить</b-btn>
-                   <b-btn squared variant="outline-secondary" class="action-button">Сохранить документ</b-btn>
+                   <b-btn squared variant="outline-secondary" class="action-button" @click="create_document(table.id)">Создать документ</b-btn>
                </b-card-footer>
             </b-card>
         </div>
@@ -71,6 +71,19 @@
                     }
                 })
             },
+            create_document: function (table_id) {
+                let data = {'action': 'create_document', 'params': {'table_id': table_id}}
+                axios({url: 'http://localhost:6060/api/table_creator/', data: data, method: 'POST'})
+                .then(resp => {
+                    if (resp.data.result === 'ok') {
+                        this.make_toast('Создание документа', 'Документ создан успешно')
+                    }
+                    else {
+                        this.make_toast('Создание документа', 'Ошибка при создании документа')
+                    }
+                })
+            },
+            // Additional methods
             make_toast: function (event_type, message, append=false) {
                 this.$bvToast.toast(message, {
                     title: event_type,

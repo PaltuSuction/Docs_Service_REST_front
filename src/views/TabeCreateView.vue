@@ -4,7 +4,7 @@
 
       <div class="card">
          <div class="card-body">
-             <b-form-group label="Укажите группу и название таблицы" class="mt-2 creation-settings-form">
+             <b-form-group label="Укажите группу и название дисциплины" class="mt-2 creation-settings-form">
                  <div class="row">
                      <b-form-select id="discipline" v-model="selected_direction" class="creation-select-direct mt-2" @change="fetch_groups">
                          <template v-slot:first>
@@ -20,7 +20,7 @@
                          </template>
                         <b-form-select-option v-for="group_number in groups_on_direction" v-bind:value="group_number">{{group_number}}</b-form-select-option>
                      </b-form-select>
-                    <b-input class="tablegen-input-name mt-2" placeholder="Название таблицы" v-model="new_table_name"/>
+                    <b-input class="tablegen-input-name mt-2" placeholder="Название дисциплины" v-model="new_table_name"/>
                  </div>
                  <b-button secondary type="submit" value="Создать" class="mt-2" @click="create_table">Создать таблицу</b-button>
              </b-form-group>
