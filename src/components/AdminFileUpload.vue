@@ -1,9 +1,13 @@
 <template>
     <div class="card">
         <div class="card-body">
-            <label for="faculty-name" class="mr-2">Название факультета:
-                <input type="text" id="faculty-name" v-model="faculty_name">
-            </label> <br/>
+                <b-form-select v-model="faculty_name" class="mt-2">
+                    <template v-slot:first>
+                            <b-form-select-option :value="''" disabled>-- Факультет --</b-form-select-option>
+                    </template>
+                    <b-form-select-option v-for="faculty in all_faculties" :key="faculty" v-bind:value="faculty">{{ store.state.faculty_decryption[faculty] }}</b-form-select-option>
+                </b-form-select>
+            <br/>
             <label>Выберите файл для загрузки:
                 <input type="file" id="file" ref="file" v-on:change="handleFileUpload()" enctype="multipart/form-data"/>
             </label>
@@ -23,12 +27,15 @@
 </template>
 
 <script>
-    import axios from "axios";
+    import axios from "axios"
+    import store from "../store"
 
     export default {
         name: "AdminFileUpload",
         data() {
             return {
+                store: store,
+                all_faculties: ['FKTI', 'INPROTECH', 'FRT', 'FEL', 'IFIO', 'FEA', 'FIBS', 'GF', 'RY'],
                 file: '',
                 faculty_name: '',
                 already_loaded_faculties: [],
@@ -68,7 +75,7 @@
                         console.log(resp.data.params.message)
                     }
                 })
-            }
+            },
         },
         created() {
             this.get_already_loaded()

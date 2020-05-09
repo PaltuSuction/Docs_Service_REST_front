@@ -3,7 +3,6 @@
         <h2>Меню редактирования таблиц</h2>
 
         <div style="margin-top: 20px">
-            Генератор находится здесь
             <TableGenerator v-if="table_data !== ''" :table_data="table_data"/>
         </div>
 

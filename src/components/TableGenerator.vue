@@ -4,15 +4,15 @@
             <b-card-body style="text-align: center">
                 <div class="mb-3">
                     <b-form-select style="width: 14vw; display: inline" v-model="choosed_column_type">
-                        <b-form-select-option v-for="type in store.state.col_types" v-bind:value="type">{{type}}</b-form-select-option>
+                        <b-form-select-option v-for="type in store.state.col_types" :key="type" v-bind:value="type">{{type}}</b-form-select-option>
                     </b-form-select>
-                    <b-form-input class="ml-5" style="width: 14vw; display: inline" v-model="custom_column_type" v-show="choosed_column_type === 'Свой вариант'" type='text' placeholder='Свой вариант'/>
+                    <b-form-input class="ml-5" style="width: 14vw; display: inline" v-model="custom_column_type" v-show="choosed_column_type === 'Свой вариант'" type='text' placeholder='Укажите свой вариант'/>
                 </div>
                 <b-form-group>
                     <b-button squared variant="outline-dark" @click="add_column" class="mr-3">Добавить столбец</b-button>
                     <b-button squared variant="outline-dark" @click="delete_column" class="mr-3">Удалить столбец</b-button>
                     <b-button squared variant="outline-dark" @click="save_table" class="mr-3">Сохранить таблицу</b-button>
-                    <b-button squared variant="outline-dark" @click="" class="mr-3">Создать документ</b-button>
+                    <b-button squared variant="outline-dark" @click="" class="mr-3">Скачать файл (.xls)</b-button>
                 </b-form-group>
             </b-card-body>
         </b-card>
@@ -104,6 +104,11 @@
                 }
                 if (_t.grades_types[_t.selected_column_type] === undefined) {
                     _t.$set(_t.grades_types, _t.selected_column_type, 1)
+                    let ordered_types = {}
+                    Object.keys(_t.grades_types).sort().forEach(function(key) {
+                        ordered_types[key] = _t.grades_types[key];
+                    })
+                    _t.grades_types = ordered_types
                 }
                 let data = {action: 'add_column', params: {table_id: _t.table_id, column_type: _t.selected_column_type}}
                 axios({url: `http://localhost:6060/api/table_creator/`, data: data, method: 'POST'})
@@ -246,11 +251,12 @@
         display: block;
         box-sizing: border-box;
         width: 100%;
-        height: 22px;
+        height: 25px;
     }
+
     .grade-input {
-        text-align: center;
+        position: center;
         width: 50px;
-        max-height: 25px;
+        height: 25px;
     }
 </style>

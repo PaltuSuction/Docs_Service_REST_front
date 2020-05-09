@@ -10,6 +10,8 @@ export default new Vuex.Store({
     token: localStorage.getItem('user-token') || null,
     user : {},
     selected_table_id: '',
+    month_names: ["Января", "Февраля", "Марта", "Апреля", "Мая", "Июня", "Июля", "Августа", "Сентября", "Октября",
+                  "Ноября", "Декабря"],
     col_types: [
         'Контрольная точка',
         'Тест',

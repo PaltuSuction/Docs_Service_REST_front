@@ -23,26 +23,22 @@
                                 <p v-if="store.state.user.is_student === true">Студент</p>
                                 <p v-if="store.state.user.is_staff === true">Администратор</p>
                                 <div class="all-nav-links">
-                                    <b-nav-item router-link to="/create_table" class="border-bottom">
+                                    <b-nav-item v-if="store.state.user.is_teacher === true" router-link to="/create_table" class="border-bottom mt-3">
                                         <div class="nav-item">Генератор таблиц</div>
                                     </b-nav-item>
-
-                                    <b-nav-item router-link to="/all_tables" class="border-bottom">
+                                    <b-nav-item v-if="store.state.user.is_teacher === true" router-link to="/all_tables" class="border-bottom mt-3">
                                         <div class="nav-item">Список созданных таблиц</div>
                                     </b-nav-item>
-                                     <b-nav-item router-link to="" class="border-bottom">
+                                     <b-nav-item v-if="store.state.user.is_teacher === true || store.state.user.is_student === true" router-link to="" class="border-bottom mt-3">
                                          <div class="nav-item">Редактирование профиля</div>
                                      </b-nav-item>
-                                     <b-nav-item router-link to="/all_groups" class="border-bottom">
-                                         <div class="nav-item">Получить список групп (демо)</div>
+                                     <b-nav-item v-if="store.state.user.is_student === true" router-link to="/all_groups" class="border-bottom mt-3">
+                                         <div class="nav-item">Список групп (ведомости группы)</div>
                                      </b-nav-item>
-                                     <b-nav-item router-link to="/admin_functions" class="border-bottom">
-                                         <div class="nav-item">Функции администратора</div>
+                                     <b-nav-item v-if="store.state.user.is_staff === true" router-link to="/admin_functions" class="border-bottom mt-3">
+                                         <div class="nav-item">Загрузка данных факультетов</div>
                                      </b-nav-item>
-                                     <b-nav-item router-link to="" class="border-bottom">
-                                         <div class="nav-item">Получить по ебалу</div>
-                                     </b-nav-item>
-                                     <b-nav-item v-on:click="logout" class="border-bottom">
+                                     <b-nav-item v-on:click="logout" class="border-bottom mt-3">
                                          <div class="nav-item">Выйти</div>
                                      </b-nav-item>
                                 </div>
