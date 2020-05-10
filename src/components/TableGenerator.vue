@@ -104,12 +104,26 @@
                 }
                 if (_t.grades_types[_t.selected_column_type] === undefined) {
                     _t.$set(_t.grades_types, _t.selected_column_type, 1)
+
                     let ordered_types = {}
                     Object.keys(_t.grades_types).sort().forEach(function(key) {
                         ordered_types[key] = _t.grades_types[key];
                     })
                     _t.grades_types = ordered_types
+                    /*
+                    let students_with_sorted_grades = []
+                    for (let student of this.students) {
+                        let ordered_types_for_student = {}
+                        Object.keys(student.grades).sort().forEach(function(key) {
+                        ordered_types_for_student[key] = student.grades[key];
+                        })
+                        student.grades = ordered_types_for_student
+                        students_with_sorted_grades.push(student)
+                    }
+                    this.students = students_with_sorted_grades
+                    */
                 }
+
                 let data = {action: 'add_column', params: {table_id: _t.table_id, column_type: _t.selected_column_type}}
                 axios({url: `http://localhost:6060/api/table_creator/`, data: data, method: 'POST'})
                 .then(resp => {
@@ -117,10 +131,21 @@
                         let new_grades = resp.data.params.new_grades
                         for (let student of _t.students) {
                             if (!(_t.selected_column_type in student.grades)) {
-                                // student.grades[_t.selected_column_type] = []
                                 _t.$set(student.grades, _t.selected_column_type, [])
                             }
                             student.grades[_t.selected_column_type].push(new_grades[student.id])
+                            //
+                            let students_with_sorted_grades = []
+                            for (let student of this.students) {
+                                let ordered_types_for_student = {}
+                                Object.keys(student.grades).sort().forEach(function(key) {
+                                ordered_types_for_student[key] = student.grades[key];
+                                })
+                                student.grades = ordered_types_for_student
+                                students_with_sorted_grades.push(student)
+                            }
+                            this.students = students_with_sorted_grades
+                            //
                         }
                     }
                     else {

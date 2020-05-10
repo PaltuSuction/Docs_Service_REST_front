@@ -7,8 +7,9 @@ import AdminFunctions from "../views/AdminFunctions";
 import LoginForm from "../components/LoginForm";
 import RegistrationForm from "../components/RegistrationForm";
 import Home from "../components/Home";
-import GroupsView from "../views/GroupsView";
+import GroupsView from "../views/GroupTables";
 import store from "../store.js";
+import GroupTables from "../views/GroupTables";
 Vue.use(VueRouter)
 
 const routes = [
@@ -36,9 +37,9 @@ const routes = [
           component: AllTables,
         },
         {
-          path: '/all_groups',
-          name: 'groupsView',
-          component: GroupsView,
+          path: '/group_tables',
+          name: 'groupTablesView',
+          component: GroupTables,
         },
         {
           path: '/admin_functions',

@@ -12,9 +12,9 @@
                    Дата последнего редактирования: {{table.table_updated_at}} <br/>
                </b-card-body>
                <b-card-footer>
-                   <b-btn squared variant="outline-secondary" class="action-button" @click="edit_table(table.id)">Редактировать</b-btn>
-                   <b-btn squared variant="outline-secondary" class="action-button" @click="delete_table(table.id)">Удалить</b-btn>
-                   <b-btn squared variant="outline-secondary" class="action-button" @click="create_document(table.id)">Скачать файл (.xls)</b-btn>
+                   <b-btn squared variant="outline-dark" class="action-button" @click="edit_table(table.id)">Редактировать</b-btn>
+                   <b-btn squared variant="outline-dark" class="action-button" @click="delete_table(table.id)">Удалить</b-btn>
+                   <b-btn squared variant="outline-dark" class="action-button" @click="create_document(table.id)">Скачать файл (.xls)</b-btn>
                </b-card-footer>
             </b-card>
         </div>
@@ -37,7 +37,6 @@
             return{
                 all_author_tables: [],
             }
-
         },
         methods: {
             fetch_tables_info: function () {

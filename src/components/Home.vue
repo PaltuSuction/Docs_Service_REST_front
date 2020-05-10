@@ -32,10 +32,10 @@
                                      <b-nav-item v-if="store.state.user.is_teacher === true || store.state.user.is_student === true" router-link to="" class="border-bottom mt-3">
                                          <div class="nav-item">Редактирование профиля</div>
                                      </b-nav-item>
-                                     <b-nav-item v-if="store.state.user.is_student === true" router-link to="/all_groups" class="border-bottom mt-3">
-                                         <div class="nav-item">Список групп (ведомости группы)</div>
+                                     <b-nav-item v-if="store.state.user.is_student === true" router-link to="/group_tables" class="border-bottom mt-3">
+                                         <div class="nav-item">Ведомости группы</div>
                                      </b-nav-item>
-                                     <b-nav-item v-if="store.state.user.is_staff === true" router-link to="/admin_functions" class="border-bottom mt-3">
+                                     <b-nav-item router-link to="/admin_functions" class="border-bottom mt-3">
                                          <div class="nav-item">Загрузка данных факультетов</div>
                                      </b-nav-item>
                                      <b-nav-item v-on:click="logout" class="border-bottom mt-3">
@@ -52,29 +52,6 @@
                   </b-container>
                 </div>
             </div>
-            <!-- <div class="row">
-              <div class="col-md-2 col-lg-2 navbar-container side-menu">
-                  <div class="sticky-top navigation">
-                      <b-nav vertical tabs>
-                          Docs_Service_REST_mod
-                          <p>Текущий пользователь: {{store.state.user.last_name}} {{store.state.user.first_name}} {{store.state.user.middle_name}} </p>
-                         <b-navbar-item router-link to="/table_gen">Генератор таблиц</b-navbar-item>
-                         <b-navbar-item router-link to="/all_tables">Список созданных таблиц</b-navbar-item>
-                         <b-navbar-item router-link to="">Список доступных дисциплин</b-navbar-item>
-                         <b-navbar-item router-link to="">Редактирование профиля</b-navbar-item>
-                         <b-navbar-item router-link to="/all_groups">Получить список групп (демо)</b-navbar-item>
-                         <b-navbar-item router-link to="/admin_functions">Функции администратора</b-navbar-item>
-                         <b-navbar-item router-link to="">Получить по ебалу</b-navbar-item>
-                         <b-navbar-item v-on:click="logout">Выйти</b-navbar-item>
-                      </b-nav>
-                  </div>
-              </div>
-              <div class="col-md-10" style="text-align: center">
-                  <b-container>
-                      <router-view/>
-                  </b-container>
-              </div>
-          </div> -->
         </div>
     </div>
 </template>
