@@ -7,9 +7,9 @@
                     <b>{{table.table_name}}, группа {{table.table_group_number}}</b>
                 </b-card-title>
                <b-card-body style="text-align: left">
-                   Направление: <b>Нет Поля</b> <br/>
-                   Дата создания: {{table.table_created_at}} <br/>
-                   Дата последнего редактирования: {{table.table_updated_at}} <br/>
+                   <b>Направление:</b> {{ store.state.direction_decryption[table.table_direction ]}} <br/>
+                   <b>Создание:</b> {{table.table_created_at}} <br/>
+                   <b>Последнее редактирование:</b> {{table.table_updated_at}} <br/>
                </b-card-body>
                <b-card-footer>
                    <b-btn squared variant="outline-dark" class="action-button" @click="edit_table(table.id)">Редактировать</b-btn>
@@ -35,6 +35,7 @@
         },
         data() {
             return{
+                store: store,
                 all_author_tables: [],
             }
         },
@@ -49,6 +50,7 @@
                             let author_table = {}
                             author_table['id'] = table['id']
                             author_table['table_name'] = table['table_name']
+                            author_table['table_direction'] = table['table_direction']
                             author_table['table_group_number'] = table['table_group_number']
                             author_table['table_created_at'] = this.get_correct_date(table['table_created_at'])
                             author_table['table_updated_at'] = this.get_correct_date(table['table_updated_at'])
@@ -80,16 +82,8 @@
             create_document: function (table_id) {
                 let data = {'action': 'create_document', 'params': {'table_id': table_id}}
                 axios({url: 'http://localhost:6060/api/table_creator/', data: data, method: 'POST', responseType: 'blob'})
-                /* .then(resp => {
-                    if (resp.data.result === 'ok') {
-                        this.make_toast('Создание документа', 'Документ создан успешно')
-                    }
-                    else {
-                        this.make_toast('Создание документа', 'Ошибка при создании документа')
-                    }
-                }) */
                     .then(resp => {
-                        console.log(resp)
+                             console.log(resp)
                              var fileURL = window.URL.createObjectURL(new Blob([resp.data]));
                              var fileLink = document.createElement('a');
                              fileLink.href = fileURL;

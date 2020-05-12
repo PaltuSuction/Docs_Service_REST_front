@@ -1,6 +1,6 @@
 <template>
     <div class="table-edit-view">
-        <h2>Меню редактирования таблиц</h2>
+        <h2>Редактирование ведомости</h2>
 
         <div style="margin-top: 20px">
             <TableGenerator v-if="table_data !== ''" :table_data="table_data"/>

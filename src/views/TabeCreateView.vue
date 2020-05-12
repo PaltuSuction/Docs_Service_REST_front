@@ -1,12 +1,12 @@
 <template>
   <div class="table-create-view">
-    <h2>Меню создания таблиц</h2>
+    <h2>Создание ведомости</h2>
 
       <div class="card">
          <div class="card-body">
-             <b-form-group label="Укажите группу и название дисциплины">
-                 <div class="row">
-                     <div class="col-md-4">
+             <b-form-group label="Выберите направление подготовки, затем группу">
+                 <b-row align-h="center">
+                     <b-col md="4" class="mr-2">
                         <b-form-select id="discipline" class="mt-2" v-model="selected_direction" @change="fetch_groups">
                          <template v-slot:first>
                             <b-form-select-option :value="''" disabled>-- Направление подготовки --</b-form-select-option>
@@ -15,25 +15,36 @@
                              {{ $store.state.direction_decryption[direction.name] }}
                          </b-form-select-option>
                         </b-form-select>
-                     </div>
-                     <div class="col-md-4">
+                     </b-col>
+                     <b-col md="4" class="ml-2">
                          <b-form-select class="mt-2" id="discipline" v-model="selected_group">
                              <template v-slot:first>
                                 <b-form-select-option :value="''" disabled>-- Группа --</b-form-select-option>
                              </template>
                              <b-form-select-option v-for="group_number in groups_on_direction" :key="group_number" v-bind:value="group_number">{{group_number}}</b-form-select-option>
                          </b-form-select>
-                     </div>
-                     <div class="col-md-4">
+                     </b-col>
+                 </b-row>
+                 </b-form-group>
+             <b-form-group label="Или сразу введите номер группы">
+                 <b-row align-h="center">
+                     <b-col md="4" class="mr-2">
+                         <b-form-input list="groups_list" class="mt-2" placeholder="Номер группы" v-model="selected_group"/>
+                     </b-col>
+                     <datalist id="groups_list">
+                        <option v-for="group_number in group_numbers">{{ group_number }}</option>
+                     </datalist>
+                     <b-col md="4" class="ml-2">
                          <b-input class="mt-2" placeholder="Название дисциплины" v-model="new_table_name"/>
-                     </div>
-                 </div>
+                     </b-col>
+                 </b-row>
                  <b-button squared secondary type="submit" value="Создать" class="mt-2" @click="create_table">Создать таблицу</b-button>
              </b-form-group>
          </div>
       </div>
 
         <TableGenerator v-if="table_data !== ''" :table_data="table_data"/>
+
   </div>
 </template>
 
@@ -55,6 +66,7 @@ export default {
                 all_directions: '',
                 selected_direction: '',
                 groups_on_direction: [],
+                group_numbers: '',
                 selected_group: '',
                 students_in_selected_group: '',
                 new_table_name: '',
@@ -86,7 +98,16 @@ export default {
         created() {
              let data = {'action': 'get_directions'}
              axios({url: 'http://localhost:6060/api/table_creator/', data: data, method: 'POST'})
-                .then(resp => (this.all_directions = resp.data.params.directions_names))
+                .then(resp => {
+                    if (resp.data.result === 'ok') {
+                        this.all_directions = resp.data.params.directions_names
+                        this.group_numbers = resp.data.params.all_group_numbers
+                    }
+                    else {
+                       console.log(resp.data.params.message)
+                    }
+                }
+                )
                 .catch(error =>(console.log(error)))
         }
 }

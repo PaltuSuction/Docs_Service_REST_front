@@ -4,7 +4,7 @@
             <div class="row">
                 <div class="col-md-2">
                     <b-sidebar
-                            title="Docs Service v0.1 REST"
+                            title="Docs Service v0.8 REST"
                             visible="true"
                             no-slide
                             no-close-on-esc
@@ -24,10 +24,10 @@
                                 <p v-if="store.state.user.is_staff === true">Администратор</p>
                                 <div class="all-nav-links">
                                     <b-nav-item v-if="store.state.user.is_teacher === true" router-link to="/create_table" class="border-bottom mt-3">
-                                        <div class="nav-item">Генератор таблиц</div>
+                                        <div class="nav-item">Новая ведомость</div>
                                     </b-nav-item>
                                     <b-nav-item v-if="store.state.user.is_teacher === true" router-link to="/all_tables" class="border-bottom mt-3">
-                                        <div class="nav-item">Список созданных таблиц</div>
+                                        <div class="nav-item">Созданные ведомости</div>
                                     </b-nav-item>
                                      <b-nav-item v-if="store.state.user.is_teacher === true || store.state.user.is_student === true" router-link to="" class="border-bottom mt-3">
                                          <div class="nav-item">Редактирование профиля</div>

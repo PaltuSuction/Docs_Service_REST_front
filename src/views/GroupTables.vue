@@ -1,11 +1,11 @@
 <template>
   <div class="all-groups">
-    <h2>Ведомости группы</h2>
+    <h2>Ведомости группы {{table.table_group_number}}</h2>
 
     <div style="text-align: center">
             <b-card v-for="table in all_group_tables" class="table-card" :key="table.table_id">
                 <b-card-title>
-                    <b>{{table.table_name}}, группа {{table.table_group_number}}</b>
+                    <b>{{table.table_name}}</b>
                 </b-card-title>
                <b-card-body style="text-align: left">
                    Направление: <b>Нет Поля</b> <br/>

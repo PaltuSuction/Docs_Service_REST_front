@@ -2,17 +2,28 @@
     <div class="table-generator">
         <b-card>
             <b-card-body style="text-align: center">
-                <div class="mb-3">
-                    <b-form-select style="width: 14vw; display: inline" v-model="choosed_column_type">
+                <b-form-group class="mb-3">
+                    <b-form-select style="width: 14vw; display: inline" class="mr-3" v-model="choosed_column_type">
+                        <template v-slot:first>
+                            <b-form-select-option :value="''" disabled>-- Тип Контрольной точки --</b-form-select-option>
+                        </template>
                         <b-form-select-option v-for="type in store.state.col_types" :key="type" v-bind:value="type">{{type}}</b-form-select-option>
                     </b-form-select>
-                    <b-form-input class="ml-5" style="width: 14vw; display: inline" v-model="custom_column_type" v-show="choosed_column_type === 'Свой вариант'" type='text' placeholder='Укажите свой вариант'/>
-                </div>
+
+                    <b-form-input style="width: 12vw; display: inline" v-model="custom_column_type" v-if="choosed_column_type === 'Свой вариант'" type='text' placeholder='Укажите свой вариант'/>
+
+                    <b-form-select style="width: 16vw; display: inline" class="ml-3" v-model="choosed_calc_option" @change="calc_all_final_grades">
+                        <template v-slot:first>
+                            <b-form-select-option :value="''">-- Расчёт итоговой оценки (откл) --</b-form-select-option>
+                        </template>
+                        <b-form-select-option v-for="option in final_grade_calc_options" :key="option.value" v-bind:value="option.value">{{option.text}}</b-form-select-option>
+                    </b-form-select>
+                </b-form-group>
                 <b-form-group>
                     <b-button squared variant="outline-dark" @click="add_column" class="mr-3">Добавить столбец</b-button>
                     <b-button squared variant="outline-dark" @click="delete_column" class="mr-3">Удалить столбец</b-button>
                     <b-button squared variant="outline-dark" @click="save_table" class="mr-3">Сохранить таблицу</b-button>
-                    <b-button squared variant="outline-dark" @click="" class="mr-3">Скачать файл (.xls)</b-button>
+                    <b-button squared variant="outline-dark" @click="create_document(table_id)" class="mr-3">Скачать файл (.xls)</b-button>
                 </b-form-group>
             </b-card-body>
         </b-card>
@@ -51,6 +62,7 @@
                                         <b-input class="grade-input"
                                                  v-show="current_grade === grade.id"
                                                  v-model="grade.grade_value"
+                                                 @change="student.grades['\u05C4Итог'][0].grade_value = final_grade_calc(student)"
                                                  @mouseleave="current_grade = ''"
                                                  @keyup.enter="current_grade = ''"/>
                                     </td>
@@ -84,6 +96,12 @@
                 choosed_column_type: '',
                 custom_column_type: '',
                 current_grade: '',
+                final_grade_calc_options: [
+                    {value: 'average', text: 'Средний балл'},
+                    {value: 'sum', text: 'Сумма баллов'},
+                ],
+                choosed_calc_option: '',
+                unfilled_as_zero: false
             }
         },
         methods: {
@@ -193,6 +211,29 @@
                     })
                 }
             },
+            final_grade_calc: function (student) {
+              if (this.choosed_calc_option === '') return
+              let final_grade = 0
+              let grades_count = 0
+              for (let [grade_type, grades_array] of Object.entries(student.grades)) {
+                  for (let grade of grades_array) {
+                      if (grade.grade_value !== null && grade.grade_value !== '' && grade_type !== '\u05C4Итог') {
+                         let grade_int = Number.parseInt(grade.grade_value)
+                         final_grade += grade_int
+                         grades_count +=1
+                      }
+                  }
+              }
+              if (this.choosed_calc_option === 'average') {final_grade = Math.round(final_grade / grades_count)}
+              if (this.choosed_calc_option === 'sum') {}
+
+              return isNaN(final_grade) ? 0 : final_grade
+            },
+            calc_all_final_grades: function() {
+              for (let student of this.students) {
+                  student.grades['\u05C4Итог'][0].grade_value = this.final_grade_calc(student)
+              }
+            },
             save_table: function() {
                 let all_grades = {}
                 for (let student of this.students) {
@@ -213,6 +254,20 @@
                     }
                 })
 
+            },
+            create_document: function (table_id) {
+                let data = {'action': 'create_document', 'params': {'table_id': table_id}}
+                axios({url: 'http://localhost:6060/api/table_creator/', data: data, method: 'POST', responseType: 'blob'})
+                    .then(resp => {
+                             console.log(resp)
+                             var fileURL = window.URL.createObjectURL(new Blob([resp.data]));
+                             var fileLink = document.createElement('a');
+                             fileLink.href = fileURL;
+                             fileLink.setAttribute('download', 'file.xls');
+                             document.body.appendChild(fileLink);
+                             fileLink.click();
+                    })
+                .catch(error => (console.log(error)))
             },
             //additional functions
             compare_grades: function (a, b) {

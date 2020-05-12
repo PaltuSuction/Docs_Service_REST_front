@@ -11,16 +11,19 @@
       <b-form-input type="text" name="last_name" v-model="fio.last_name" placeholder="Фамилия" required class="mt-2" :state="fio_state" @change="fio_state = null"/>
       <b-form-input type="text" name="first_name" v-model="fio.first_name" placeholder="Имя" required class="mt-2" :state="fio_state" @change="fio_state = null"/>
       <b-form-input type="text" name="middle_name" v-model="fio.middle_name" placeholder="Отчество" required class="mt-2"></b-form-input>
+
       <b-form-select v-model="teacher_faculty" class="mt-2" @change="set_study_directs" :state="faculty_state">
         <b-form-select-option v-for="faculty in all_faculties" v-bind:value="faculty">{{ store.state.faculty_decryption[faculty.name] }}</b-form-select-option>
       </b-form-select>
+
       <b-form-group label="Преподаваемые направления" class="mt-2">
-        <b-form-select v-model="selected_studying_directions" multiple :state="directs_state" @change="directs_state = null">
+        <b-form-select v-model="selected_studying_directions" multiple :state="directs_state" :select-size="6" @change="directs_state = null">
           <b-form-select-option v-for="direction_name in faculty_studying_directions" v-bind:value="direction_name">
             {{store.state.direction_decryption[direction_name]}}
           </b-form-select-option>
         </b-form-select>
       </b-form-group>
+
       <b-form-input type="password" name="password" v-model="password" placeholder="Пароль" required class="mt-2" :state="passwords_state" @change="passwords_state = null"/>
       <b-form-input type="password" name="password2" v-model="password2" placeholder="Пароль (ещё раз)" required class="mt-2" :state="passwords_state" @change="passwords_state = null"/>
     </b-card-body>
@@ -138,8 +141,8 @@
 <style scoped>
 
   .register-card {
-    width: 400px;
-    height: 650px;
+    width: 470px;
+    height: 700px;
     position: absolute;
     top: calc(50% - 325px);
     left: calc(50% - 200px);
@@ -150,6 +153,6 @@
     right: 0;
     margin-left: auto;
     margin-right: auto;
-    width: 300px; /* Need a specific value to work */
+    width: 300px;
  }
 </style>
