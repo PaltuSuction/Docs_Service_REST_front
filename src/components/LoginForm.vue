@@ -8,7 +8,7 @@
         <b-card-sub-title v-if="error" class="error-subtitle">Ошибка. Проверьте введенные данные.</b-card-sub-title>
       </b-card-title>
       <b-card-body>
-        <b-form-input type="text" name="username" v-model="username" :state="username_state" @change="username_state = null" placeholder="№ Билета / Email" required></b-form-input>
+        <b-form-input type="email" name="email" v-model="email" :state="email_state" @change="email_state = null" placeholder="Email пользователя" required></b-form-input>
         <b-form-input  type="password" name="password" v-model="password" :state="password_state" @change="password_state = null" placeholder="Пароль" required class="mt-3"/>
       </b-card-body>
       <b-card-footer>
@@ -28,8 +28,8 @@
     export default {
       data: function () {
         return {
-          username: '',
-          username_state: null,
+          email: '',
+          email_state: null,
           password: '',
           password_state: null,
           token: localStorage.getItem('user-token') || null,
@@ -39,17 +39,17 @@
       methods: {
         login: async function () {
           this.error = false
-          this.username_state = null
+          this.email_state = null
           this.password_state = null
-          if (this.username === '') this.username_state = false
-          else this.username_state = null
+          if (this.email === '') this.email_state = false
+          else this.email_state = null
           if (this.password === '') this.password_state = false
           else this.password_state = null
-          if (this.username_state === false || this.password_state === false) return
+          if (this.email_state === false || this.password_state === false) return
 
-          let username = this.username
+          let email = this.email
           let password = this.password
-          axios({url: 'http://localhost:6060/auth/', data: {username, password}, method: 'POST'})
+          axios({url: 'http://localhost:6060/auth/', data: {email, password}, method: 'POST'})
             .then(resp => {
               if (resp.data.result === 'ok') {
                 let user_info = {'token': resp.data.params.token, 'user': resp.data.params.user }
@@ -57,7 +57,6 @@
                 axios.defaults.headers.common['Authorization'] = 'Token ' + resp.data.params.token
                 store.commit('auth_success', user_info)
                 router.push('/')
-                // resolve(resp)
               }
               else {
                store.commit('auth_error', resp.data.result)

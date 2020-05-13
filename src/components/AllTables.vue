@@ -1,12 +1,13 @@
 <template>
     <div class="all-tables">
-        <h2>Здесь будут все таблицы, созданные текущим пользователем</h2>
+        <h2>Созданные ведомости</h2>
         <div style="text-align: center">
             <b-card v-for="table in all_author_tables" class="table-card" :key="table.table_id">
                 <b-card-title>
                     <b>{{table.table_name}}, группа {{table.table_group_number}}</b>
                 </b-card-title>
                <b-card-body style="text-align: left">
+                   <b>Кафедра:</b> {{table.table_department}}<br/>
                    <b>Направление:</b> {{ store.state.direction_decryption[table.table_direction ]}} <br/>
                    <b>Создание:</b> {{table.table_created_at}} <br/>
                    <b>Последнее редактирование:</b> {{table.table_updated_at}} <br/>
@@ -14,7 +15,7 @@
                <b-card-footer>
                    <b-btn squared variant="outline-dark" class="action-button" @click="edit_table(table.id)">Редактировать</b-btn>
                    <b-btn squared variant="outline-dark" class="action-button" @click="delete_table(table.id)">Удалить</b-btn>
-                   <b-btn squared variant="outline-dark" class="action-button" @click="create_document(table.id)">Скачать файл (.xls)</b-btn>
+                   <b-btn squared variant="outline-dark" class="action-button" @click="create_document(table.id, table.table_name, table.table_group_number)">Скачать файл (.xls)</b-btn>
                </b-card-footer>
             </b-card>
         </div>
@@ -50,6 +51,7 @@
                             let author_table = {}
                             author_table['id'] = table['id']
                             author_table['table_name'] = table['table_name']
+                            author_table['table_department'] = table['table_department']
                             author_table['table_direction'] = table['table_direction']
                             author_table['table_group_number'] = table['table_group_number']
                             author_table['table_created_at'] = this.get_correct_date(table['table_created_at'])
@@ -79,7 +81,7 @@
                     }
                 })
             },
-            create_document: function (table_id) {
+            create_document: function (table_id, table_name, group_number) {
                 let data = {'action': 'create_document', 'params': {'table_id': table_id}}
                 axios({url: 'http://localhost:6060/api/table_creator/', data: data, method: 'POST', responseType: 'blob'})
                     .then(resp => {
@@ -87,7 +89,8 @@
                              var fileURL = window.URL.createObjectURL(new Blob([resp.data]));
                              var fileLink = document.createElement('a');
                              fileLink.href = fileURL;
-                             fileLink.setAttribute('download', 'file.xls');
+                             let file_name = table_name + '_' + group_number + '.xls'
+                             fileLink.setAttribute('download', file_name);
                              document.body.appendChild(fileLink);
                              fileLink.click();
                     })

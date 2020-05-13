@@ -28,13 +28,21 @@
                  </b-form-group>
              <b-form-group label="Или сразу введите номер группы">
                  <b-row align-h="center">
-                     <b-col md="4" class="mr-2">
+                     <b-col md="3" class="mr-2">
                          <b-form-input list="groups_list" class="mt-2" placeholder="Номер группы" v-model="selected_group"/>
                      </b-col>
                      <datalist id="groups_list">
                         <option v-for="group_number in group_numbers">{{ group_number }}</option>
                      </datalist>
-                     <b-col md="4" class="ml-2">
+
+                     <b-col md="3" class="mr-2">
+                         <b-form-input list="departments_list" class="mt-2" placeholder="Кафедра" v-model="table_department"/>
+                     </b-col>
+                     <datalist id="departments_list">
+                        <option v-for="department_name in teacher_departments">{{ department_name }}</option>
+                     </datalist>
+
+                     <b-col md="3" class="ml-2">
                          <b-input class="mt-2" placeholder="Название дисциплины" v-model="new_table_name"/>
                      </b-col>
                  </b-row>
@@ -71,6 +79,9 @@ export default {
                 students_in_selected_group: '',
                 new_table_name: '',
                 table_data: '',
+
+                teacher_departments: [],
+                table_department: '',
             }
         },
         methods: {
@@ -82,26 +93,25 @@ export default {
             },
             create_table: function() {
                 let data = {'action': 'create_new',
-                    params: {'group_number': this.selected_group, 'new_table_name': this.new_table_name}
+                    params: {'group_number': this.selected_group, 'new_table_name': this.new_table_name, 'table_department': this.table_department}
                 }
                 axios({url: 'http://localhost:6060/api/table_creator/', data: data, method: 'POST'})
-                // .then(resp => (this.fetch_students_info(resp.data.params.students)))
                 .then(resp => {
                     if (resp.data.result === 'ok') {
                         this.table_data = resp.data.params.table_data
-                        // console.log(this.table_data)
                     }
                 })
                 .catch(error =>(console.log(error)))
             },
         },
         created() {
-             let data = {'action': 'get_directions'}
+             let data = {'action': 'get_directs_and_departments'}
              axios({url: 'http://localhost:6060/api/table_creator/', data: data, method: 'POST'})
                 .then(resp => {
                     if (resp.data.result === 'ok') {
                         this.all_directions = resp.data.params.directions_names
                         this.group_numbers = resp.data.params.all_group_numbers
+                        this.teacher_departments = resp.data.params.teacher_departments
                     }
                     else {
                        console.log(resp.data.params.message)

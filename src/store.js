@@ -90,19 +90,22 @@ export default new Vuex.Store({
         },
       fetch_user_data({commit}) {
            let token = localStorage.getItem('user-token')
-           let data = {'token': token}
+           let data = {'action': 'fetch_user_data', 'params': {'token': token}}
            return new Promise((resolve, reject) => {
                 commit('auth_request')
                 axios.defaults.headers.common['Authorization'] = 'Token ' + token
                 axios({url: 'http://localhost:6060/api/user_info/', data: data, method: 'POST' })
                 .then(resp => {
-                  commit('auth_success', {'token': token, 'user':resp.data.user})
-                  resolve(resp)
-                })
-                .catch(err => {
-                  commit('auth_error', err)
-                  // localStorage.removeItem('user-token')
-                  reject(err)
+                    if (resp.data.result === 'ok') {
+                         commit('auth_success', {'token': token, 'user':resp.data.params.user})
+                         resolve(resp)
+                    }
+                    else {
+                        commit('auth_error', resp.data.params.message)
+                        console.log(resp.data.params.message)
+                        // localStorage.removeItem('user-token')
+                        reject(resp.data.params.message)
+                    }
                 })
               })
       }

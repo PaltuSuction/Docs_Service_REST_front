@@ -1,6 +1,6 @@
 <template>
     <div class="table-generator">
-        <b-card>
+        <b-card class="mt-3">
             <b-card-body style="text-align: center">
                 <b-form-group class="mb-3">
                     <b-form-select style="width: 14vw; display: inline" class="mr-3" v-model="choosed_column_type">
@@ -27,7 +27,7 @@
                 </b-form-group>
             </b-card-body>
         </b-card>
-        <b-card>
+        <b-card class="mt-1">
             <b-card-body>
                 <div class="table-wrapper">
                     <table border="2" style="margin: auto" ref="grades_table">
@@ -51,7 +51,7 @@
                         <tbody>
 
                             <tr v-for="student in students">
-                               <td class="table-fio-cell">
+                               <td class="table-fio-cell" align="left">
                                     {{student.fio}}
                                </td>
                                 <template v-for="grade_type in student.grades">
@@ -212,7 +212,7 @@
                 }
             },
             final_grade_calc: function (student) {
-              if (this.choosed_calc_option === '') return
+              if (this.choosed_calc_option === '') {return student.grades['\u05C4Итог'][0].grade_value}
               let final_grade = 0
               let grades_count = 0
               for (let [grade_type, grades_array] of Object.entries(student.grades)) {
@@ -230,8 +230,10 @@
               return isNaN(final_grade) ? 0 : final_grade
             },
             calc_all_final_grades: function() {
-              for (let student of this.students) {
+              if (this.choosed_calc_option !== '') {
+                for (let student of this.students) {
                   student.grades['\u05C4Итог'][0].grade_value = this.final_grade_calc(student)
+                }
               }
             },
             save_table: function() {
@@ -256,6 +258,7 @@
 
             },
             create_document: function (table_id) {
+                this.save_table()
                 let data = {'action': 'create_document', 'params': {'table_id': table_id}}
                 axios({url: 'http://localhost:6060/api/table_creator/', data: data, method: 'POST', responseType: 'blob'})
                     .then(resp => {

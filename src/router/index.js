@@ -7,9 +7,10 @@ import AdminFunctions from "../views/AdminFunctions";
 import LoginForm from "../components/LoginForm";
 import RegistrationForm from "../components/RegistrationForm";
 import Home from "../components/Home";
-import GroupsView from "../views/GroupTables";
 import store from "../store.js";
 import GroupTables from "../views/GroupTables";
+import ProfileEditView from "../views/ProfileEditView";
+import GroupTableInstance from "../components/GroupTableInstance";
 Vue.use(VueRouter)
 
 const routes = [
@@ -42,9 +43,19 @@ const routes = [
           component: GroupTables,
         },
         {
+          path: '/group_table_instance',
+          name: 'groupTableInstance',
+          component: GroupTableInstance,
+        },
+        {
           path: '/admin_functions',
           name: 'adminFunctions',
           component: AdminFunctions,
+        },
+        {
+          path: '/profile_edit',
+          name: 'profileEdit',
+          component: ProfileEditView,
         },
      ]
   },
