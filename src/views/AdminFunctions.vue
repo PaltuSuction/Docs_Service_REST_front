@@ -1,6 +1,6 @@
 <template>
   <div class="admin-functions">
-    <h2>Администрирование</h2>
+    <h2>Данные факультетов</h2>
       <AdminFileUpload/>
   </div>
 </template>

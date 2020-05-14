@@ -1,7 +1,6 @@
 <template>
   <div class="table-create-view">
     <h2>Создание ведомости</h2>
-
       <div class="card">
          <div class="card-body">
              <b-form-group label="Выберите направление подготовки, затем группу">

@@ -39,11 +39,6 @@
                             <b-button class="ml-2" variant="outline-dark" @click="delete_department">Удалить</b-button>
                         </div>
                 </div>
-
-                <div v-if="store.state.user.is_student === true">
-                    <p><b>Группа:</b> {{user_data.group_number}}</p>
-                </div>
-
                 <p class="mt-2"><b>Смена пароля</b>
                 <b-form-group>
                     <b-form-input class="password-input" v-model="old_password" type="password" placeholder="Старый пароль"/>

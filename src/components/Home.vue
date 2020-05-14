@@ -4,7 +4,7 @@
             <div class="row">
                 <div class="col-md-2">
                     <b-sidebar
-                            title="JOnline 1.0"
+                            title="Docs Service 1.0"
                             visible="true"
                             no-slide
                             no-close-on-esc

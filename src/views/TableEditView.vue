@@ -1,13 +1,10 @@
 <template>
     <div class="table-edit-view">
-        <h2>Редактирование ведомости</h2>
-
+        <h2>{{table_data.table_name}}, группа {{table_data.table_group_number}}</h2>
         <div style="margin-top: 20px">
             <TableGenerator v-if="table_data !== ''" :table_data="table_data"/>
         </div>
-
     </div>
-
 </template>
 
 <script>

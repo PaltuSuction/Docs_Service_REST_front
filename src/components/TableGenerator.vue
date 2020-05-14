@@ -23,7 +23,7 @@
                     <b-button squared variant="outline-dark" @click="add_column" class="mr-3">Добавить столбец</b-button>
                     <b-button squared variant="outline-dark" @click="delete_column" class="mr-3">Удалить столбец</b-button>
                     <b-button squared variant="outline-dark" @click="save_table" class="mr-3">Сохранить таблицу</b-button>
-                    <b-button squared variant="outline-dark" @click="create_document(table_id)" class="mr-3">Скачать файл (.xls)</b-button>
+                    <b-button squared variant="outline-dark" @click="create_document(table_id, table_name, table_group_number)" class="mr-3">Скачать файл (.xls)</b-button>
                 </b-form-group>
             </b-card-body>
         </b-card>
@@ -84,24 +84,30 @@
 
     export default {
         name: "TableGenerator",
-        components: {},
+        components: {
+        },
         props: ['table_data'],
         data() {
             return {
                 store: store,
                 table_id: '',
+                table_name: '',
+                table_group_number: '',
                 students: '',
                 grades_types: '',
+
                 selected_column_type: '',
                 choosed_column_type: '',
                 custom_column_type: '',
                 current_grade: '',
+
                 final_grade_calc_options: [
                     {value: 'average', text: 'Средний балл'},
                     {value: 'sum', text: 'Сумма баллов'},
                 ],
                 choosed_calc_option: '',
-                unfilled_as_zero: false
+
+                // unfilled_as_zero: false
             }
         },
         methods: {
@@ -257,19 +263,20 @@
                 })
 
             },
-            create_document: function (table_id) {
+            create_document: function (table_id, table_name, group_number) {
                 this.save_table()
                 let data = {'action': 'create_document', 'params': {'table_id': table_id}}
                 axios({url: 'http://localhost:6060/api/table_creator/', data: data, method: 'POST', responseType: 'blob'})
-                    .then(resp => {
-                             console.log(resp)
-                             var fileURL = window.URL.createObjectURL(new Blob([resp.data]));
-                             var fileLink = document.createElement('a');
-                             fileLink.href = fileURL;
-                             fileLink.setAttribute('download', 'file.xls');
-                             document.body.appendChild(fileLink);
-                             fileLink.click();
-                    })
+                .then(resp => {
+                    console.log(resp)
+                    var fileURL = window.URL.createObjectURL(new Blob([resp.data]));
+                    var fileLink = document.createElement('a');
+                    fileLink.href = fileURL;
+                    let file_name = table_name + '_' + group_number + '.xls'
+                    fileLink.setAttribute('download', file_name);
+                    document.body.appendChild(fileLink);
+                    fileLink.click();
+                })
                 .catch(error => (console.log(error)))
             },
             //additional functions
@@ -290,6 +297,8 @@
         },
         created() {
             this.table_id = this.table_data.id
+            this.table_name = this.table_data.table_name
+            this.table_group_number = this.table_data.table_group_number
             this.students = this.table_data.students_and_grades
             this.grades_types = this.table_data.grades_types
         }
